@@ -6,7 +6,7 @@ create unique index ix_auth_username on authorities (username,authority);
 INSERT INTO users VALUES ('user', '{noop}EazyBytes@12345', '1');
 INSERT INTO authorities VALUES ('user', 'read');
 
-INSERT INTO users VALUES ('admin', '{bcrypt}$2a$12$88.f6upbBvy0okEa7OfHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m', '1');
+INSERT INTO users VALUES ('admin', '{bcrypt}$2a$10$cq05VaVm.609pkcBuCfQxuIeIYlByvXGKUDcIF7pkbCxw1iM242tW', '1');
 INSERT INTO authorities VALUES ('admin', 'admin');
 
 CREATE TABLE customer (
