@@ -3,11 +3,12 @@ package com.moldavets.eazy_bank.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "customers")
 public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "customer_id")
     private Long id;
 
     @Column(name = "email")

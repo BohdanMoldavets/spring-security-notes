@@ -1,14 +1,14 @@
 DROP TABLE IF EXISTS authorities;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS customer CASCADE;
+DROP TABLE IF EXISTS customers CASCADE;
 DROP TABLE IF EXISTS accounts CASCADE;
-DROP TABLE IF EXISTS account_transactions CASCADE;
+DROP TABLE IF EXISTS accounts_transactions CASCADE;
 DROP TABLE IF EXISTS loans CASCADE;
 DROP TABLE IF EXISTS cards CASCADE;
 DROP TABLE IF EXISTS notice_details CASCADE;
 DROP TABLE IF EXISTS contact_messages CASCADE;
 
-CREATE TABLE customer (
+CREATE TABLE customers (
                           customer_id SERIAL PRIMARY KEY,
                           name VARCHAR(100) NOT NULL,
                           email VARCHAR(100) NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE customer (
                           create_dt DATE DEFAULT NULL
 );
 
-INSERT INTO customer (name, email, mobile_number, pwd, role, create_dt)
+INSERT INTO customers (name, email, mobile_number, pwd, role, create_dt)
 VALUES ('Happy','happy@example.com','5334122365', '{bcrypt}$2a$12$88.f6upbBvy0okEa7OfHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m', 'admin', CURRENT_DATE);
 
 CREATE TABLE accounts (
@@ -27,13 +27,13 @@ CREATE TABLE accounts (
                           account_type VARCHAR(100) NOT NULL,
                           branch_address VARCHAR(200) NOT NULL,
                           create_dt DATE DEFAULT NULL,
-                          FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE
+                          FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
 
 INSERT INTO accounts (customer_id, account_number, account_type, branch_address, create_dt)
 VALUES (1, 1865764534, 'Savings', '123 Main Street, New York', CURRENT_DATE);
 
-CREATE TABLE account_transactions (
+CREATE TABLE accounts_transactions (
                                       transaction_id UUID PRIMARY KEY,
                                       account_number INT NOT NULL,
                                       customer_id INT NOT NULL,
@@ -44,11 +44,10 @@ CREATE TABLE account_transactions (
                                       closing_balance INT NOT NULL,
                                       create_dt DATE DEFAULT NULL,
                                       FOREIGN KEY (account_number) REFERENCES accounts(account_number) ON DELETE CASCADE,
-                                      FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE
+                                      FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
 
--- Пример генерации UUID и дат с интервалом
-INSERT INTO account_transactions
+INSERT INTO accounts_transactions
 (transaction_id, account_number, customer_id, transaction_dt, transaction_summary, transaction_type, transaction_amt, closing_balance, create_dt)
 VALUES
     (gen_random_uuid(), 1865764534, 1, CURRENT_DATE - INTERVAL '7 days', 'Coffee Shop', 'Withdrawal', 30, 34500, CURRENT_DATE - INTERVAL '7 days'),
@@ -67,7 +66,7 @@ CREATE TABLE loans (
                        amount_paid INT NOT NULL,
                        outstanding_amount INT NOT NULL,
                        create_dt DATE DEFAULT NULL,
-                       FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE
+                       FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
 
 INSERT INTO loans (customer_id, start_dt, loan_type, total_loan, amount_paid, outstanding_amount, create_dt)
@@ -86,7 +85,7 @@ CREATE TABLE cards (
                        amount_used INT NOT NULL,
                        available_amount INT NOT NULL,
                        create_dt DATE DEFAULT NULL,
-                       FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON DELETE CASCADE
+                       FOREIGN KEY (customer_id) REFERENCES customers(customer_id) ON DELETE CASCADE
 );
 
 INSERT INTO cards (card_number, customer_id, card_type, total_limit, amount_used, available_amount, create_dt)
@@ -99,13 +98,13 @@ CREATE TABLE notice_details (
                                 notice_id SERIAL PRIMARY KEY,
                                 notice_summary VARCHAR(200) NOT NULL,
                                 notice_details VARCHAR(500) NOT NULL,
-                                notic_beg_dt DATE NOT NULL,
-                                notic_end_dt DATE DEFAULT NULL,
+                                notice_beg_dt DATE NOT NULL,
+                                notice_end_dt DATE DEFAULT NULL,
                                 create_dt DATE DEFAULT NULL,
                                 update_dt DATE DEFAULT NULL
 );
 
-INSERT INTO notice_details (notice_summary, notice_details, notic_beg_dt, notic_end_dt, create_dt, update_dt)
+INSERT INTO notice_details (notice_summary, notice_details, notice_beg_dt, notice_end_dt, create_dt, update_dt)
 VALUES
     ('Home Loan Interest rates reduced', 'Home loan interest rates are reduced as per the goverment guidelines. The updated rates will be effective immediately',
      CURRENT_DATE - INTERVAL '30 days', CURRENT_DATE + INTERVAL '30 days', CURRENT_DATE, NULL),
